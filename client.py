@@ -5,3 +5,6 @@ host = "10.203.1.88"
 port = 6677
 socket.connect((host, port))
 
+input("Press enter to send a test message.")
+socket.send("Hello World".encode())
+
