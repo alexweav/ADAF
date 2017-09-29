@@ -1,8 +1,10 @@
 import socket
 import threading
+import pickle
+import numpy as np
 
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-host = "10.203.1.88"
+host = "10.203.62.151"
 port = 6677
 socket.bind((host, port))
 
@@ -15,9 +17,10 @@ class Client(threading.Thread):
 
     def run(self):
         while True:
-            message = self.socket.recv(1024).decode()
-            if message != "":
-                print("Got a message: ", message)
+            data = self.socket.recv(1024)
+            if data != b'':
+                arr = pickle.loads(data)
+                print(repr(arr))
 
 socket.listen(5)
 while True:
