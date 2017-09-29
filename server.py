@@ -1,6 +1,7 @@
 import socket
 import threading
 import pickle
+import subprocess
 import numpy as np
 
 socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -13,14 +14,17 @@ class Client(threading.Thread):
         threading.Thread.__init__(self)
         self.socket = socket
         self.address = address
+        self.connection = self.socket.makefile('rb')
         self.start()
 
     def run(self):
+        cmdline = ['vlc', '--demux', 'h264', '-']
+        player = subprocess.Popen(cmdline, stdin=subprocess.PIPE)
         while True:
-            data = self.socket.recv(1024)
-            if data != b'':
-                arr = pickle.loads(data)
-                print(repr(arr))
+            data = self.connection.read(1024)
+            if not data:
+                return
+            player.stdin.write(data)
 
 socket.listen(5)
 while True:
