@@ -3,26 +3,7 @@ import select
 import sys
 import queue
 
-class Socket:
-
-    def __init__(self, address):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.address = address
-
-    def Address(self):
-        return self.address
-
-    def Ip(self):
-        return self.address[0]
-
-    def Port(self):
-        return self.address[1]
-
-    def Socket(self):
-        return self.socket
-
-    def ReadCallback(self):
-        raise NotImplementedError('Calling an abstract method')
+from Socket import *
 
 class ControllerSocket(Socket):
 
@@ -53,6 +34,16 @@ class DataStream(Socket):
 def GetRawSocketList(sockets):
     return [socket.Socket() for socket in sockets]
 
+def SelectSockets(read_sockets, write_sockets, exceptional_sockets):
+    select_inputs = GetRawSocketList(inputs)
+    select_outputs = GetRawSocketList(outputs)
+    readable_select, writable_select, exceptional_select = select.select(select_inputs, select_outputs, select_inputs)
+    readable = [registry[socket] for socket in readable_select]
+    writable = [registry[socket] for socket in writable_select]
+    exceptional = [registry[socket] for socket in exceptional_select]
+    return readable, writable, exceptional
+
+
 ip = 'localhost'
 port = 10000
 registry = {}
@@ -65,16 +56,10 @@ message_queues = {}
 
 while inputs:
     print(sys.stderr, 'Waiting for the next event')
-    select_inputs = GetRawSocketList(inputs)
-    select_outputs = GetRawSocketList(outputs)
-    readable_select, writable_select, exceptional_select = select.select(select_inputs, select_outputs, select_inputs)
-    readable = [registry[socket] for socket in readable_select]
-    writable = [registry[socket] for socket in writable_select]
-    exceptional = [registry[socket] for socket in exceptional_select]
+    readable, writable, exceptional = SelectSockets(inputs, outputs, inputs)
 
     for s in readable:
         if s is controller:
-            print('asdfasdf')
             connection = controller.ReadCallback()
             stream = DataStream((ip, port), connection)
             registry[connection] = stream
@@ -107,6 +92,6 @@ while inputs:
         inputs.remove(s)
         if s in outputs:
             outputs.remove(s)
-        s.close()
+        s.Close()
         del message_queues[s]
             
