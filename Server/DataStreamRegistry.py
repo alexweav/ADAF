@@ -7,21 +7,6 @@ from Socket import *
 from ControllerSocket import *
 from DataStream import *
 
-def GetRawSocketList(sockets):
-    return [socket.Socket() for socket in sockets]
-
-"""
-def SelectSockets(read_sockets, write_sockets, exceptional_sockets):
-    select_read = GetRawSocketList(read_sockets)
-    select_write = GetRawSocketList(write_sockets)
-    select_exceptional = GetRawSocketList(exceptional_sockets)
-    readable_select, writable_select, exceptional_select = select.select(select_read, select_write, select_exceptional)
-    readable = [registry[socket] for socket in readable_select]
-    writable = [registry[socket] for socket in writable_select]
-    exceptional = [registry[socket] for socket in exceptional_select]
-    return readable, writable, exceptional
-"""
-
 class DataStreamRegistry(object):
 
     def __init__(self, ip, port):
@@ -87,10 +72,13 @@ class DataStreamRegistry(object):
     def GetInputs(self):
         return self.inputs
 
+    def GetRawSocketList(self, sockets):
+        return [socket.Socket() for socket in sockets]
+
     def SelectSockets(self, read_sockets, write_sockets, exceptional_sockets):
-        select_read = GetRawSocketList(read_sockets)
-        select_write = GetRawSocketList(write_sockets)
-        select_exceptional = GetRawSocketList(exceptional_sockets)
+        select_read = self.GetRawSocketList(read_sockets)
+        select_write = self.GetRawSocketList(write_sockets)
+        select_exceptional = self.GetRawSocketList(exceptional_sockets)
         readable_select, writable_select, exceptional_select = select.select(select_read, select_write, select_exceptional)
         readable = [self.registry[socket] for socket in readable_select]
         writable = [self.registry[socket] for socket in writable_select]
@@ -98,61 +86,9 @@ class DataStreamRegistry(object):
         return readable, writable, exceptional
 
 
-
-
 ip = 'localhost'
 port = 10000
 reg = DataStreamRegistry(ip, port)
 while reg.inputs:
     reg.ReadSockets()
-"""
-registry = {}
-controller = ControllerSocket((ip, port))
-registry[controller.Socket()] = controller
-inputs = [controller]
-outputs = []
-
-message_queues = {}
-"""
-
-while inputs:
-    print(sys.stderr, 'Waiting for the next event')
-    readable, writable, exceptional = SelectSockets(inputs, outputs, inputs)
-
-    for s in readable:
-        if s is controller:
-            connection = controller.ReadCallback()
-            stream = DataStream((ip, port), connection)
-            registry[connection] = stream
-            message_queues[stream] = queue.Queue()
-            inputs.append(stream)
-        else:
-            data = s.ReadCallback()
-            if data:
-                print(sys.stderr, 'received', data, 'from', s.Socket().getpeername())
-                message_queues[s].put(data)
-                if s not in outputs:
-                    outputs.append(s)
-            else:
-                print(sys.stderr, 'closing', s.Address)
-                if s in outputs:
-                    outputs.remove(s)
-                inputs.remove(s)
-                del message_queues[s]
-                del registry[s.Socket()]
-
-    for s in writable:
-        try:
-            next_msg = message_queues[s].get_nowait()
-        except queue.Empty:
-            outputs.remove(s)
-        else:
-            s.Socket().send(next_msg)
-
-    for s in exceptional:
-        inputs.remove(s)
-        if s in outputs:
-            outputs.remove(s)
-        s.Close()
-        del message_queues[s]
             
