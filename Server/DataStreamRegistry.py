@@ -33,7 +33,7 @@ class DataStreamRegistry(object):
 
     def HandleController(self, socket):
         connection = self.controller.ReadCallback()
-        stream = DataStream((ip, port), connection)
+        stream = DataStream((self.ip, self.port), connection)
         self.registry[connection] = stream
         self.message_queues[stream] = queue.Queue()
         self.inputs.append(stream)
@@ -85,10 +85,3 @@ class DataStreamRegistry(object):
         exceptional = [self.registry[socket] for socket in exceptional_select]
         return readable, writable, exceptional
 
-
-ip = 'localhost'
-port = 10000
-reg = DataStreamRegistry(ip, port)
-while reg.inputs:
-    reg.ReadSockets()
-            

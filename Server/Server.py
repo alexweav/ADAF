@@ -1,9 +1,13 @@
 import argparse
 
+from DataStreamRegistry import *
+
 def main():
     args = GetArgumentValues()
-    print(args.ip)
-    print(args.port)
+    reg = DataStreamRegistry(args.ip, args.port)
+    print("Starting server at", args.ip, "on port", args.port)
+    while reg.GetInputs():
+        reg.ReadSockets()
 
 def GetArgumentValues():
     parser = argparse.ArgumentParser(description='Server for the ADAF')
