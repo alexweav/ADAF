@@ -2,6 +2,9 @@ import argparse
 
 from DataStreamRegistry import *
 
+"""
+Starts the server
+"""
 def main():
     args = GetArgumentValues()
     reg = DataStreamRegistry(args.ip, args.port)
@@ -9,6 +12,9 @@ def main():
     while reg.GetInputs():
         reg.ReadSockets()
 
+"""
+Parses the command line arguments into an argparse structure
+"""
 def GetArgumentValues():
     parser = argparse.ArgumentParser(description='Server for the ADAF')
     parser.add_argument('--ip', type=str, nargs='?', default='localhost',
