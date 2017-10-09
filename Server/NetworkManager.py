@@ -4,32 +4,8 @@ import sys
 import queue
 
 from Socket import *
-
-class ControllerSocket(Socket):
-
-    def __init__(self, address):
-        super().__init__(address)
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind(self.address)
-        self.socket.listen(5)
-
-    def ReadCallback(self):
-        connection, client_address = self.socket.accept()
-        print(sys.stderr, 'New connection from', client_address)
-        connection.setblocking(0)
-        return connection
-
-class DataStream(Socket):
-
-    def __init__(self, address, socket):
-        self.address = address
-        self.socket = socket
-
-    def ReadCallback(self):
-        data = self.socket.recv(1024)
-        if not data:
-            self.socket.close()
-        return data
+from ControllerSocket import *
+from DataStream import *
 
 def GetRawSocketList(sockets):
     return [socket.Socket() for socket in sockets]
@@ -73,7 +49,7 @@ while inputs:
                 if s not in outputs:
                     outputs.append(s)
             else:
-                print(sys.stderr, 'closing', client_address)
+                print(sys.stderr, 'closing', s.Address)
                 if s in outputs:
                     outputs.remove(s)
                 inputs.remove(s)
