@@ -1,3 +1,4 @@
+import json
 import socket
 import sys
 
@@ -10,6 +11,7 @@ Opens two sockets for streaming data, and cyclically streams values for each one
 """
 
 messages = ['Message part 1, ', 'part 2, ', 'and part 3.']
+header = json.dumps({'type': 'AbcStream'})
 server_address = ('localhost', 10000)
 
 sockets = [socket.socket(socket.AF_INET, socket.SOCK_STREAM),
@@ -23,6 +25,12 @@ for s in sockets:
     s.connect(server_address)
 
 i = 0
+s.send(header.encode())
+data = s.recv(1024)
+if not data:
+    print('closing %s', s.getsockname())
+    s.close()
+"""
 while True:
     for s in sockets:
         s.send(streams[s][i].encode())
@@ -33,4 +41,5 @@ while True:
         if not data:
             print('closing socket %s', s.getsockname())
             s.close()
+"""
 

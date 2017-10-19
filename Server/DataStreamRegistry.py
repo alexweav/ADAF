@@ -3,9 +3,11 @@ import select
 import sys
 import queue
 
+from AbcStream import *
 from Socket import *
 from ControllerSocket import *
 from DataStream import *
+from UninitializedStream import *
 
 """
 Manages all available data streams and handles requests for them
@@ -42,16 +44,18 @@ class DataStreamRegistry(object):
     """
     def HandleController(self, socket):
         connection = self.controller.ReadCallback()
-        stream = DataStream((self.ip, self.port), connection)
-        self.registry[connection] = stream
-        self.message_queues[stream] = queue.Queue()
-        self.inputs.append(stream)
+        stream = UninitializedStream((self.ip, self.port), connection, self)
+        self.RegisterDataStream(stream)
+        #self.registry[connection] = stream
+        #self.message_queues[stream] = queue.Queue()
+        #self.inputs.append(stream)
 
     """
     Handles a DataStream if there is a known read-style update. This usually indicates that new data has been written to the socket
     """
     def HandleReadStream(self, socket):
         data = socket.ReadCallback()
+        socket.HandleStream(data)
         if data:
             print(sys.stderr, 'received', data, 'from', socket.Socket().getpeername())
             self.message_queues[socket].put(data)
@@ -113,4 +117,9 @@ class DataStreamRegistry(object):
         writable = [self.registry[socket] for socket in writable_select]
         exceptional = [self.registry[socket] for socket in exceptional_select]
         return readable, writable, exceptional
+
+    def RegisterDataStream(self, stream):
+        self.registry[stream.Socket()] = stream
+        self.message_queues[stream] = queue.Queue()
+        self.inputs.append(stream)
 
