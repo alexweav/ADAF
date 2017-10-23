@@ -1,6 +1,7 @@
 import json
 from DataStream import *
 from AbcStream import *
+from DefStream import *
 
 class UninitializedStream(DataStream):
     
@@ -13,6 +14,7 @@ class UninitializedStream(DataStream):
             stream = AbcStream(self.address, self.socket, self.registry)
         elif stream_type == 'DefStream':
             print('DefStream requested')
+            stream = DefStream(self.address, self.socket, self.registry)
         else:
             print('An unrecognized stream attempted to connect. Closing...')
             self.Close()

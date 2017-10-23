@@ -21,7 +21,7 @@ class DataStream(Socket):
         return data
 
     """
-    Abstract method for handling the stream directly
+    Abstract method for handling the specific stream type
     """
     def HandleStream(self, data):
         raise NotImplementedError('Calling an abstract method')
