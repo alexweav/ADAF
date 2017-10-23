@@ -30,7 +30,7 @@ class DataStreamRegistry(object):
     Checks for socket updates from the OS and handles them according to their type
     """
     def ReadSockets(self):
-        print(sys.stderr, 'Waiting for the next event')
+        #print(sys.stderr, 'Waiting for the next event')
         readable, writable, exceptional = self.SelectSockets(self.inputs, self.outputs, self.inputs)
         for s in readable:
             if s is self.controller:
@@ -53,7 +53,15 @@ class DataStreamRegistry(object):
 
     def HandleUninitialized(self, socket):
         json = socket.ReadCallback()
-        socket.HandleStream(json)
+        stream = socket.HandleStream(json)
+        self.uninitialized.remove(socket)
+        socket.Socket().send(json)#####
+        if socket in self.outputs:
+            self.outputs.remove(socket)
+        self.inputs.remove(socket)
+        del self.message_queues[socket]
+        del self.registry[socket.Socket()]
+        self.RegisterDataStream(stream)
 
     """
     Handles a DataStream if there is a known read-style update. This usually indicates that new data has been written to the socket
@@ -62,7 +70,7 @@ class DataStreamRegistry(object):
         data = socket.ReadCallback()
         socket.HandleStream(data)
         if data:
-            print(sys.stderr, 'received', data, 'from', socket.Socket().getpeername())
+            #print(sys.stderr, 'received', data, 'from', socket.Socket().getpeername())
             self.message_queues[socket].put(data)
             if socket not in self.outputs:
                 self.outputs.append(socket)
