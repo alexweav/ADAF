@@ -51,6 +51,9 @@ class DataStreamRegistry(object):
         self.RegisterDataStream(stream)
         self.uninitialized.append(stream)
 
+    """
+    Handles uninitialized streams which are waiting for a json structure"
+    """
     def HandleUninitialized(self, socket):
         json = socket.ReadCallback()
         stream = socket.HandleStream(json)
@@ -131,6 +134,10 @@ class DataStreamRegistry(object):
         exceptional = [self.registry[socket] for socket in exceptional_select]
         return readable, writable, exceptional
 
+    """
+    Registers a new datastream with the system
+    Doesn't take care of any special cases, such as uninitialized streams
+    """
     def RegisterDataStream(self, stream):
         self.registry[stream.Socket()] = stream
         self.message_queues[stream] = queue.Queue()
