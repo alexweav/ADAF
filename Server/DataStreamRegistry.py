@@ -3,9 +3,11 @@ import select
 import sys
 import queue
 
+from AbcStream import *
 from Socket import *
 from ControllerSocket import *
 from DataStream import *
+from UninitializedStream import *
 
 """
 Manages all available data streams and handles requests for them
@@ -21,17 +23,20 @@ class DataStreamRegistry(object):
         self.registry[self.controller.Socket()] = self.controller
         self.inputs = [self.controller]
         self.outputs = []
+        self.uninitialized = []
         self.message_queues = {}
 
     """
     Checks for socket updates from the OS and handles them according to their type
     """
     def ReadSockets(self):
-        print(sys.stderr, 'Waiting for the next event')
+        #print(sys.stderr, 'Waiting for the next event')
         readable, writable, exceptional = self.SelectSockets(self.inputs, self.outputs, self.inputs)
         for s in readable:
             if s is self.controller:
                 self.HandleController(s)
+            elif s in self.uninitialized:
+                self.HandleUninitialized(s)
             else:
                 self.HandleReadStream(s)
         for s in writable:
@@ -42,18 +47,33 @@ class DataStreamRegistry(object):
     """
     def HandleController(self, socket):
         connection = self.controller.ReadCallback()
-        stream = DataStream((self.ip, self.port), connection)
-        self.registry[connection] = stream
-        self.message_queues[stream] = queue.Queue()
-        self.inputs.append(stream)
+        stream = UninitializedStream((self.ip, self.port), connection, self)
+        self.RegisterDataStream(stream)
+        self.uninitialized.append(stream)
+
+    """
+    Handles uninitialized streams which are waiting for a json structure"
+    """
+    def HandleUninitialized(self, socket):
+        json = socket.ReadCallback()
+        stream = socket.HandleStream(json)
+        self.uninitialized.remove(socket)
+        socket.Socket().send(json)#####
+        if socket in self.outputs:
+            self.outputs.remove(socket)
+        self.inputs.remove(socket)
+        del self.message_queues[socket]
+        del self.registry[socket.Socket()]
+        self.RegisterDataStream(stream)
 
     """
     Handles a DataStream if there is a known read-style update. This usually indicates that new data has been written to the socket
     """
     def HandleReadStream(self, socket):
         data = socket.ReadCallback()
+        socket.HandleStream(data)
         if data:
-            print(sys.stderr, 'received', data, 'from', socket.Socket().getpeername())
+            #print(sys.stderr, 'received', data, 'from', socket.Socket().getpeername())
             self.message_queues[socket].put(data)
             if socket not in self.outputs:
                 self.outputs.append(socket)
@@ -113,4 +133,13 @@ class DataStreamRegistry(object):
         writable = [self.registry[socket] for socket in writable_select]
         exceptional = [self.registry[socket] for socket in exceptional_select]
         return readable, writable, exceptional
+
+    """
+    Registers a new datastream with the system
+    Doesn't take care of any special cases, such as uninitialized streams
+    """
+    def RegisterDataStream(self, stream):
+        self.registry[stream.Socket()] = stream
+        self.message_queues[stream] = queue.Queue()
+        self.inputs.append(stream)
 

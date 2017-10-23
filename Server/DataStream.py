@@ -5,9 +5,10 @@ Represents a single source of streaming data from a client
 """
 class DataStream(Socket):
 
-    def __init__(self, address, socket):
+    def __init__(self, address, socket, registry):
         self.address = address
         self.socket = socket
+        self.registry = registry
 
     """
     Reads a message, with a max of one kb, from the associated raw socket and return it
@@ -19,4 +20,9 @@ class DataStream(Socket):
             self.socket.close()
         return data
 
-
+    """
+    Abstract method for handling the specific stream type
+    """
+    def HandleStream(self, data):
+        raise NotImplementedError('Calling an abstract method')
+       
