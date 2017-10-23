@@ -23,6 +23,7 @@ class DataStreamRegistry(object):
         self.registry[self.controller.Socket()] = self.controller
         self.inputs = [self.controller]
         self.outputs = []
+        self.uninitialized = []
         self.message_queues = {}
 
     """
@@ -34,6 +35,8 @@ class DataStreamRegistry(object):
         for s in readable:
             if s is self.controller:
                 self.HandleController(s)
+            elif s in self.uninitialized:
+                self.HandleUninitialized(s)
             else:
                 self.HandleReadStream(s)
         for s in writable:
@@ -46,9 +49,11 @@ class DataStreamRegistry(object):
         connection = self.controller.ReadCallback()
         stream = UninitializedStream((self.ip, self.port), connection, self)
         self.RegisterDataStream(stream)
-        #self.registry[connection] = stream
-        #self.message_queues[stream] = queue.Queue()
-        #self.inputs.append(stream)
+        self.uninitialized.append(stream)
+
+    def HandleUninitialized(self, socket):
+        json = socket.ReadCallback()
+        socket.HandleStream(json)
 
     """
     Handles a DataStream if there is a known read-style update. This usually indicates that new data has been written to the socket
