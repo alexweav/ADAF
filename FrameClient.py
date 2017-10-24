@@ -24,7 +24,7 @@ camera.start_preview()
 time.sleep(2)
 
 frame_header = json.dumps({'type': 'FrameStream'})
-server_address = ('localhost', 10000)
+server_address = ('192.168.1.8', 10000)
 
 
 frame_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

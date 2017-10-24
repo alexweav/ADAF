@@ -28,7 +28,7 @@ try:
     stream = io.BytesIO()
     
     print(count)
-    print(capture_t)
+    
     for foo in camera.capture_continuous(stream, 'jpeg'):
         # Write the length of the capture to the stream and flush to
         # ensure it actually gets sent            
