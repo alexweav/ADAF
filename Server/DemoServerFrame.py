@@ -4,6 +4,7 @@ import struct
 from PIL import Image
 import time
 import sys
+import string
 
 # Start a socket listening for connections on 0.0.0.0:8000 (0.0.0.0 means
 # all interfaces)
@@ -13,6 +14,7 @@ server_socket.listen(0)
 
 # Accept a single connection and make a file-like object out of it
 connection = server_socket.accept()[0].makefile('rb')
+count = 0
 try:
     while True:
         # Read the length of the image as a 32-bit unsigned int. If the
@@ -30,7 +32,7 @@ try:
         image = Image.open(image_stream)
 
 
-image.show("image: "+count)
+        image.show()
         print('Image is %dx%d' % image.size)
         image.verify()
         print('Image is verified')
