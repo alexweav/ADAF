@@ -1,4 +1,5 @@
 import argparse
+from time import sleep
 
 from DataStreamRegistry import *
 
@@ -11,6 +12,7 @@ def main():
     print("Starting server at", args.ip, "on port", args.port)
     while reg.GetInputs():
         reg.ReadSockets()
+
 
 """
 Parses the command line arguments into an argparse structure
