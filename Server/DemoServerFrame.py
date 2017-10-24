@@ -9,7 +9,7 @@ import string
 # Start a socket listening for connections on 0.0.0.0:8000 (0.0.0.0 means
 # all interfaces)
 server_socket = socket.socket()
-server_socket.bind(('192.168.1.8', 10000))
+server_socket.bind(('169.254.227.100', 10000))
 server_socket.listen(0)
 
 # Accept a single connection and make a file-like object out of it
