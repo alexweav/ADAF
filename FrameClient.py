@@ -16,7 +16,7 @@ Opens one socket
 
 #start up camera
 camera = picamera.PiCamera()
-camera.resolution = (20, 20)
+camera.resolution = (50, 50)
 camera.hflip = True
 camera.vflip = True
 # Start a preview and let the camera warm up for 2 seconds
@@ -46,7 +46,7 @@ else:
     print('beginning frame stream')
 
 # Make a file-like object out of the connection
-connection = frame_socket.makefile('wb')
+#connection = frame_socket.makefile('wb')
 stream = io.BytesIO()
 count = 0
 print(count)
@@ -58,8 +58,8 @@ for foo in camera.capture_continuous(stream, 'png'):
     
     # Rewind the stream and send the image data over the wire
     stream.seek(0)
-    connection.write(stream.read())
-   
+    #connection.write(stream.read())
+    frame_socket.send(stream.read())
     count = count +1
     # If we've been capturing for more than 30 seconds, quit
     #if time.time() - start > 30:
@@ -69,7 +69,8 @@ for foo in camera.capture_continuous(stream, 'png'):
     stream.seek(0)
     stream.truncate()
     print(count)    
-    
+    time.sleep(1)
+
     
 """
 while True:
