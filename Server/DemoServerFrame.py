@@ -8,7 +8,7 @@ import sys
 # Start a socket listening for connections on 0.0.0.0:8000 (0.0.0.0 means
 # all interfaces)
 server_socket = socket.socket()
-server_socket.bind(('192.168.1.5', 8001))
+server_socket.bind(('192.168.1.8', 10000))
 server_socket.listen(0)
 
 # Accept a single connection and make a file-like object out of it
@@ -29,18 +29,12 @@ try:
         image_stream.seek(0)
         image = Image.open(image_stream)
 
-        t = time.time()
-        
-        clocktime = time.clock()
-        image.show("qqregqreg")
+
+image.show("image: "+count)
         print('Image is %dx%d' % image.size)
         image.verify()
         print('Image is verified')
         print(count)
-        print(t)
-        t_str = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime(t))
-        print ("Local current time :", t_str)
-        print ("Local clock time :", clocktime)
         count=count +1
 
 finally:
