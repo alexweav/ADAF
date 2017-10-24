@@ -15,14 +15,11 @@ class FrameStream(DataStream):
         count = 0
         
         print(len(data))
-        for b in data:
-            print(b)
-            count = count +1
-            if count > 5:
-                break
-    #image = Image.open(io.BytesIO(data))
-    #image.show()
-    #print('Image is %dx%d' % image.size)
-        #image.verify()
-        # print('Image is verified')
-#print('FrameStream got a message:', message)
+       
+        image = Image.open(io.BytesIO(data))
+            #image.verify()
+            #print('Image is verified')
+        image.show()
+        
+        #print('Image is %dx%d' % image.size)
+        #print('FrameStream got a message:', message)
