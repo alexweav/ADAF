@@ -3,7 +3,7 @@ This plugin has one function, which returns the text "Hello World"
 """
 class HelloWorldPlugin():
 
-    def __init__(self):
+    def __init__(args):
         # PluginBase.registerCallback("helloWorld")
         return
 
