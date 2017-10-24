@@ -3,7 +3,7 @@ import socket
 import struct
 import time
 import picamera
-import datetime as dt
+
 count = 0
 # Connect a client socket to my_server:8000 (change my_server to the
 # hostname of your server)
@@ -25,15 +25,11 @@ try:
     # temporarily (we could write it directly to connection but in this
     # case we want to find out the size of each capture first to keep
     # our protocol simple)
-    start = time.time()
     stream = io.BytesIO()
-    capture_t = time.time()
-    overlay_str = "seq:"+str(count)+"  " + time.strftime('%Y-%m-%d %H:%M:%S' ,time.localtime(capture_t))  
-  #  camera.annotate_text =         overlay_str
+    
     print(count)
     print(capture_t)
     for foo in camera.capture_continuous(stream, 'jpeg'):
-        print(stream.tell())
         # Write the length of the capture to the stream and flush to
         # ensure it actually gets sent            
         connection.write(struct.pack('<L', stream.tell()))
@@ -51,11 +47,6 @@ try:
         stream.seek(0)
         stream.truncate()
         print(count)
-        
-        capture_t = time.time()
-        overlay_str = "seq:"+str(count)+"  " + time.strftime('%Y-%m-%d %H:%M:%S' ,time.localtime(capture_t))  
-      #  camera.annotate_text =         overlay_str
-        print(capture_t)
         
     # Write a length of zero to the stream to signal we're done
     connection.write(struct.pack('<L', 0))
