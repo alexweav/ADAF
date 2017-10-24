@@ -15,7 +15,7 @@ class DataStream(Socket):
     If data is unavailable, close the socket and return None
     """
     def ReadCallback(self):
-        data = self.socket.recv(1024)
+        data = self.socket.recv(1024*50)
         if not data:
             self.socket.close()
         return data
