@@ -2,6 +2,9 @@ import json
 import socket
 import sys
 import time
+import picamera
+import io
+import struct
 
 """
 Frame Client
@@ -10,6 +13,15 @@ A simple client script for transporting JPEG frames.
 Opens one socket
 
 """
+
+#start up camera
+camera = picamera.PiCamera()
+camera.resolution = (640, 480)
+camera.hflip = True
+camera.vflip = True
+# Start a preview and let the camera warm up for 2 seconds
+camera.start_preview()
+time.sleep(2)
 
 frame_header = json.dumps({'type': 'FrameStream'})
 server_address = ('localhost', 10000)
@@ -33,7 +45,6 @@ if not data:
 else:
     print('beginning frame stream')
 
-
 while True:
     frame_socket.send(streams[frame_socket][i].encode())
     
@@ -44,5 +55,6 @@ while True:
         print('closing socket %s', frame_socket.getsockname())
         frame_socket.close()
     time.sleep(1)
+
 
 
