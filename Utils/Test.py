@@ -1,0 +1,28 @@
+from Packetizer import *
+
+value = b'\x01'*25
+p = Packetizer(value, 10)
+print(p.PacketSize())
+print(p.FinalPacketSize())
+print(p.PacketsRemaining())
+print(p.OnFinalPacket())
+print(p.Done())
+print(p.Next())
+print(p.PacketSize())
+print(p.FinalPacketSize())
+print(p.PacketsRemaining())
+print(p.OnFinalPacket())
+print(p.Done())
+print(p.Next())
+print(p.PacketSize())
+print(p.FinalPacketSize())
+print(p.PacketsRemaining())
+print(p.OnFinalPacket())
+print(p.Done())
+print(p.Next())
+print(p.PacketSize())
+print(p.FinalPacketSize())
+print(p.PacketsRemaining())
+print(p.OnFinalPacket())
+print(p.Done())
+
