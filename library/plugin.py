@@ -1,12 +1,16 @@
 # Needed for loading from directory
 import sys
+import os
 from os import listdir
 from os.path import isfile, join
 from importlib import import_module
 
-# Added path to plugins package TODO This needs to be updated to work in any sys
-sys.path.insert(0, '/Users/mario/developer/python/ADAF/plugins')
-
+# Added path to plugins package
+# __file__ : this file path, relative to os.getcwd()
+# full_path : This file full path (following symlinks)
+# os.path.dirname(full_path) : This file directory only
+full_path = os.path.realpath(__file__)
+sys.path.insert(0, os.path.dirname(os.path.dirname(full_path)) + "/plugins")
 
 """
 Plugin Engine
@@ -20,7 +24,6 @@ class PluginEngine:
         self.loadFromDirectory("../plugins")
 
     def loadFromDirectory(self, folderPath):
-
         # get a list of modules from the plugins directory
         folder = [f for f in listdir(folderPath) if isfile(join(folderPath, f))]
         print("Files in Plugin folder: ", folder)
