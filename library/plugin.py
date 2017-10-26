@@ -1,7 +1,12 @@
 # Needed for loading from directory
+import sys
 from os import listdir
 from os.path import isfile, join
 from importlib import import_module
+
+# Added path to plugins package TODO This needs to be updated to work in any sys
+sys.path.insert(0, '/Users/mario/developer/python/ADAF/plugins')
+
 
 """
 Plugin Engine
@@ -21,11 +26,7 @@ class PluginEngine:
         print("Files in Plugin folder: ", folder)
         print("First Module: ", folderPath + "/" + folder[0])
 
-        my_module = import_module("testPlugin")
-        helloWorld = my_module.HelloWorldPlugin()
-        helloWorld.helloWorld()
-
-        relativeModule = import_module("testPlugin", "../plugins/")
+        relativeModule = import_module("testPlugin", "plugins/")
         test2 = relativeModule.HelloWorldPlugin()
         test2.helloWorld()
 
@@ -47,7 +48,7 @@ Plugin Base
 TODO: Write short description
 """
 class PluginBase:
-    availableClasses[] = {}
+    availableClasses = []
 
     def __init__(self):
         registerCallback(callback)
