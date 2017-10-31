@@ -37,15 +37,11 @@ class PluginEngine:
     def loadFromDirectory(self, folderPath):
         # get a list of modules from the plugins directory
         plugins = [f for f in listdir(folderPath) if isfile(join(folderPath, f))]
-        print("Files in Plugin folder: ", plugins)
-        print("First Module: ", folderPath + "/" + plugins[0])
 
         moduleList = []
         ignoreFiles = [".DS_Store", "__init__.py"]
-        print("Plugins: ", plugins)
 
         module = import_module("testPlugin", "plugins/")
-        print(module)
 
         for plugin in plugins:
             # Check for system files
@@ -59,23 +55,3 @@ class PluginEngine:
             # Imports the module
             module = import_module(plugin, "plugins/")
             moduleList.append(module)
-
-        print(moduleList)
-
-plugin = PluginEngine()
-
-"""
-Plugin Base
-TODO: Write short description
-"""
-class PluginBase:
-    availableClasses = []
-
-    def __init__(self):
-        registerCallback(callback)
-
-    def registerCallbacks(args):
-        return 0
-
-    def getCallBacks():
-        return 1
