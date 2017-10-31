@@ -2,6 +2,14 @@ from DataStream import *
 from PIL import Image
 import io
 import string
+import json
+#wtf
+from sys import path
+from os.path import dirname as dir
+path.append(dir(path[0]))
+from Utils import Depacketizer
+
+from PIL import Image
 
 """
 A test datastream, which receives simple utf-8 data
@@ -10,16 +18,31 @@ See DefStream for its counterpart test stream
 """
 
 class FrameStream(DataStream):
-    
+
     def HandleStream(self, data):
         count = 0
-        
-        print(len(data))
+
+        try:
+            self.expectingPacket
+        except:
+            self.expectingPacket = False
+
+        if not self.expectingPacket:
+            jsonstr = data.decode('utf8')
+            size = json.loads(jsonstr)
+            print('packets', size['packets'])
+            print('fsize', size['finalPacketSize'])
+
+            self.depacketizer = Depacketizer.Depacketizer(size['packets'], size['finalPacketSize'])
+            self.expectingPacket = True
+        else:
+            print(len(data))
+            self.depacketizer.Next(data)
+            if self.depacketizer.Done():
+                print('done')
+                self.expectingPacket = False
+                data = self.depacketizer.Data()
+                print('final len', len(data))
+                image = Image.open(io.BytesIO(data))
+                image.show()
        
-        image = Image.open(io.BytesIO(data))
-            #image.verify()
-            #print('Image is verified')
-        image.show()
-        
-        #print('Image is %dx%d' % image.size)
-        #print('FrameStream got a message:', message)
