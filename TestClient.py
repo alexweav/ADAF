@@ -13,7 +13,7 @@ Opens two sockets for streaming data, and cyclically streams values for each one
 
 abc_header = json.dumps({'type': 'AbcStream'})
 def_header = json.dumps({'type': 'DefStream'})
-server_address = ('localhost', 10000)
+server_address = ('10.42.0.1', 10000)
 
 #sockets = [socket.socket(socket.AF_INET, socket.SOCK_STREAM),
 #           socket.socket(socket.AF_INET, socket.SOCK_STREAM)]
@@ -50,18 +50,18 @@ else:
 
 while True:
     abc_socket.send(streams[abc_socket][i].encode())
-    def_socket.send(streams[def_socket][i].encode())
+    def_socket.send((streams[def_socket][i] * 1024*5).encode())
     i = (i+1) % 3
 
     data = abc_socket.recv(1024)
     if not data:
         print('closing socket %s', abc_socket.getsockname())
         abc_socket.close()
-    data = def_socket.recv(1024)
+    data = def_socket.recv(1024*50)
     if not data:
         print('closing socket %s', def_socket.getsockname())
         def_socket.close()
-    time.sleep(1)
+    time.sleep(0.4)
 """
 while True:
     for s in sockets:

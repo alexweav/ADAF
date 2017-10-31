@@ -5,6 +5,8 @@ import time
 import picamera
 import io
 import struct
+from array import array
+from Utils.Packetizer import *
 
 """
 Frame Client
@@ -16,7 +18,7 @@ Opens one socket
 
 #start up camera
 camera = picamera.PiCamera()
-camera.resolution = (50, 50)
+camera.resolution = (640, 480)
 camera.hflip = True
 camera.vflip = True
 # Start a preview and let the camera warm up for 2 seconds
@@ -24,7 +26,7 @@ camera.vflip = True
 time.sleep(2)
 
 frame_header = json.dumps({'type': 'FrameStream'})
-server_address = ('169.254.227.100', 10000)
+server_address = ('10.42.0.1', 10000)
 
 
 frame_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -38,7 +40,7 @@ frame_socket.connect(server_address)
 i = 0
 frame_socket.send(frame_header.encode())
 print('sent headers for frame stream')
-data = frame_socket.recv(1024*50)
+data = frame_socket.recv(1024)
 if not data:
     print('closing %s', frame_socket.getsockname())
     frame_socket.close()
@@ -51,7 +53,7 @@ stream = io.BytesIO()
 count = 0
 print(count)
     
-for foo in camera.capture_continuous(stream, 'png'):
+for foo in camera.capture_continuous(stream, 'jpeg'):
     print(stream.tell())
     # Write the length of the capture to the stream and flush to
     # ensure it actually gets sent            
@@ -59,7 +61,16 @@ for foo in camera.capture_continuous(stream, 'png'):
     # Rewind the stream and send the image data over the wire
     stream.seek(0)
     #connection.write(stream.read())
-    frame_socket.send(stream.read())
+    packetizer = Packetizer(stream.read())
+    print("asdf", packetizer.PacketsRemaining())
+    jsn = json.dumps({'packets': int(packetizer.PacketsRemaining())+1, 'finalPacketSize': int(packetizer.FinalPacketSize())})
+    frame_socket.send(jsn.encode())
+    while not packetizer.Done():
+        packet = packetizer.Next()
+        print('length', len(packet))
+        frame_socket.send(packet)
+        time.sleep(0.005)
+    #frame_socket.send(stream.read())
     count = count +1
     # If we've been capturing for more than 30 seconds, quit
     #if time.time() - start > 30:
