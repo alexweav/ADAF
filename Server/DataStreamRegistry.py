@@ -30,7 +30,6 @@ class DataStreamRegistry(object):
     Checks for socket updates from the OS and handles them according to their type
     """
     def ReadSockets(self):
-        #print(sys.stderr, 'Waiting for the next event')
         readable, writable, exceptional = self.SelectSockets(self.inputs, self.outputs, self.inputs)
         for s in readable:
             if s is self.controller:
@@ -74,7 +73,7 @@ class DataStreamRegistry(object):
         socket.HandleStream(data)
         if data:
             #print(sys.stderr, 'received', data, 'from', socket.Socket().getpeername())
-            self.message_queues[socket].put(data)
+            self.message_queues[socket].put(str(len(data)).encode())
             if socket not in self.outputs:
                 self.outputs.append(socket)
         else:
