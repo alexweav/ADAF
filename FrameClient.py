@@ -88,18 +88,3 @@ for foo in camera.capture_continuous(stream, 'jpeg'):
     print(count)    
     time.sleep(1)
 
-    
-"""
-while True:
-    frame_socket.send(streams[frame_socket][i].encode())
-    
-    i = (i+1) % 3
-
-    data = frame_socket.recv(1024)
-    if not data:
-        print('closing socket %s', frame_socket.getsockname())
-        frame_socket.close()
-    time.sleep(1)
-"""
-
-
