@@ -52,6 +52,7 @@ class PluginEngine:
 
             # Imports the module
             module = import_module(plugin, "plugins/")
-            pluginList.append(module)
+            myClass = getattr(module, plugin)
+            pluginList.append(myClass)
 
 pluginTest = PluginEngine()

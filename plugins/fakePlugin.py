@@ -1,5 +1,7 @@
 """
 Plugin used for testing.
+
+The class name must be the same as the file name.
 """
 class FakePlugin():
 
@@ -8,6 +10,3 @@ class FakePlugin():
 
     def helloWorld(self):
         print("hello world")
-
-def test():
-    print("Test world")
