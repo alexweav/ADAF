@@ -21,7 +21,7 @@ class PluginEngine:
     Returns the path for the plugins directory and adds it to sys.path to make it a
     package that may be referenced from an import statement.
     """
-    def setPluginsDirectoryPath(self):
+    def SetPluginsDirectoryPath(self):
         # __file__ : this file path, relative to os.getcwd()
         # full_path : This file full path (following symlinks)
         full_path = os.path.realpath(__file__)
@@ -34,7 +34,7 @@ class PluginEngine:
     """
     Loads all the plugin modules
     """
-    def loadFromDirectory(self, folderPath):
+    def LoadFromDirectory(self, folderPath):
         # get a list of modules from the plugins directory
         plugins = [f for f in listdir(folderPath) if isfile(join(folderPath, f))]
 

@@ -1,1 +1,1 @@
-# Required to make the /plugins directory a package.
+# Required to make the plugins directory a package.

@@ -8,5 +8,5 @@ class FakePlugin():
     def __init__(self):
         return
 
-    def helloWorld(self):
+    def HelloWorld(self):
         print("hello world")
