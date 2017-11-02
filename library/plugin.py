@@ -38,10 +38,8 @@ class PluginEngine:
         # get a list of modules from the plugins directory
         plugins = [f for f in listdir(folderPath) if isfile(join(folderPath, f))]
 
-        moduleList = []
+        pluginList = []
         ignoreFiles = [".DS_Store", "__init__.py"]
-
-        module = import_module("testPlugin", "plugins/")
 
         for plugin in plugins:
             # Check for system files
@@ -54,4 +52,6 @@ class PluginEngine:
 
             # Imports the module
             module = import_module(plugin, "plugins/")
-            moduleList.append(module)
+            pluginList.append(module)
+
+pluginTest = PluginEngine()
