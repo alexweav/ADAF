@@ -65,11 +65,17 @@ for foo in camera.capture_continuous(stream, 'jpeg'):
     print("asdf", packetizer.PacketsRemaining())
     jsn = json.dumps({'packets': int(packetizer.PacketsRemaining())+1, 'finalPacketSize': int(packetizer.FinalPacketSize())})
     frame_socket.send(jsn.encode())
+    response = frame_socket.recv(1024)
+    print('received JSON response', data.decode('utf8'))
+    #Send packetized frame loop
     while not packetizer.Done():
         packet = packetizer.Next()
         print('length', len(packet))
         frame_socket.send(packet)
-        time.sleep(0.005)
+        #time.sleep(0.005)
+        response = frame_socket.recv(1024)
+        print(data.decode('utf8'))
+
     #frame_socket.send(stream.read())
     count = count +1
     # If we've been capturing for more than 30 seconds, quit
