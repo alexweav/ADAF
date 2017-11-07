@@ -3,6 +3,7 @@ from PIL import Image
 import io
 import string
 import json
+import subprocess
 #wtf
 from sys import path
 from os.path import dirname as dir
@@ -36,7 +37,7 @@ class FrameStream(DataStream):
             self.depacketizer = Depacketizer.Depacketizer(size['packets'], size['finalPacketSize'])
             self.expectingPacket = True
         else:
-            print(len(data))
+            #print(len(data))
             self.depacketizer.Next(data)
             if self.depacketizer.Done():
                 print('done')
@@ -44,5 +45,7 @@ class FrameStream(DataStream):
                 data = self.depacketizer.Data()
                 print('final len', len(data))
                 image = Image.open(io.BytesIO(data))
+                image.save("adaf_frame.JPG")
                 image.show()
-       
+                cmdline = ['alpr','adaf_frame.JPG']
+                player = subprocess.Popen(cmdline, stdin=subprocess.PIPE)
