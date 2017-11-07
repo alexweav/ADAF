@@ -8,14 +8,15 @@ from importlib import import_module
 """
 Plugin Engine
 On init the engine will load all the modules inside of the plugins
-directory and add them to the list of available classes stored in PluginBase.
+directory and add them to the list of available classes stored in PluginManager.
 """
 class PluginEngine:
+    pluginList = []
 
     def __init__(self):
         # Sets the plugins package path
-        pluginPath = self.setPluginsDirectoryPath()
-        self.loadFromDirectory(pluginPath + "/plugins")
+        pluginPath = self.SetPluginsDirectoryPath()
+        self.LoadFromDirectory(pluginPath + "/plugins")
 
     """
     Returns the path for the plugins directory and adds it to sys.path to make it a
@@ -38,7 +39,6 @@ class PluginEngine:
         # get a list of modules from the plugins directory
         plugins = [f for f in listdir(folderPath) if isfile(join(folderPath, f))]
 
-        pluginList = []
         ignoreFiles = [".DS_Store", "__init__.py"]
 
         for plugin in plugins:
@@ -53,6 +53,8 @@ class PluginEngine:
             # Imports the module
             module = import_module(plugin, "plugins/")
             myClass = getattr(module, plugin)
-            pluginList.append(myClass)
+            instantiate = myClass()
 
-pluginTest = PluginEngine()
+            self.pluginList.append(instantiate)
+
+        print(self.pluginList)
