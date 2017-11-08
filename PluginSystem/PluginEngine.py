@@ -11,11 +11,8 @@ On init the engine will load all the modules inside of the plugins
 directory and add them to the list of available classes stored in PluginManager.
 """
 class PluginEngine:
-    pluginList = []
-    historicalCallbacks = []
-    historicalCallbackStreams = {}
-    realtimeCallbacks = []
-    realtimeCallbackStreams = {}
+    historicalCallbacks = {}
+    realtimeCallbacks = {}
 
     def __init__(self):
         # Sets the plugins package path
@@ -62,32 +59,24 @@ class PluginEngine:
             instantiate = myClass(self)
             instantiate.init()
 
-            self.pluginList.append(instantiate)
-
-        # print(self.pluginList)
-
     """
     Registers the function and streams to the engine
     """
-    def RegisterCallback(self, engine, fn, streams):
+    def RegisterCallback(self, engine, name, fn, streams):
 
         if(engine == 'realtime'):
-            self.realtimeCallbacks.append(fn)
-            self.realtimeCallbackStreams[fn] = streams
+            self.realtimeCallbacks[name] = [fn, streams]
         else:
-            self.historicalCallbacks.append(fn)
-            self.historicalCallbackStreams[fn] = streams
+            self.historicalCallbacks[name] = [fn, streams]
 
     """
-    Returns a list of all the realtimeCallbacks
+    Returns a dictionary of all the realtimeCallbacks
     """
     def GetRealtimeCallbacks(self):
-        print(self.realtimeCallbacks)
         return self.realtimeCallbacks
 
     """
-    Returns a list of all the Get historicalCallbacks
+    Returns a dictionary of all the historicalCallbacks
     """
     def GetHistoricalCallbacks(self):
-        print(self.historicalCallbacks)
         return self.historicalCallbacks
