@@ -1,9 +1,7 @@
 """
 Plugin Base Class
-
 """
 class PluginBase:
-
     pluginEngine = 0
 
     """
