@@ -26,7 +26,7 @@ camera.vflip = True
 time.sleep(2)
 
 frame_header = json.dumps({'type': 'FrameStream'})
-server_address = ('10.42.0.1', 10000)
+server_address = ('169.254.140.252', 10000)
 
 
 frame_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -63,7 +63,7 @@ for foo in camera.capture_continuous(stream, 'jpeg'):
     #connection.write(stream.read())
     packetizer = Packetizer(stream.read())
     print("asdf", packetizer.PacketsRemaining())
-    jsn = json.dumps({'packets': int(packetizer.PacketsRemaining())+1, 'finalPacketSize': int(packetizer.FinalPacketSize())})
+    jsn = json.dumps({'packets': int(packetizer.PacketsRemaining()), 'finalPacketSize': int(packetizer.FinalPacketSize())})
     frame_socket.send(jsn.encode())
     response = frame_socket.recv(1024)
     print('received JSON response', data.decode('utf8'))
