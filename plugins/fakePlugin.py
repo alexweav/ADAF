@@ -10,6 +10,8 @@ The class name must be the same as the file name.
 """
 class FakePlugin(PluginBase.PluginBase):
 
-    def HelloWorld(self):
-        print("hello world")
-        print(self.pluginEngine)
+    def init(self):
+        self.pluginEngine.RegisterCallback("realtime", "HelloWorld", ["cameraStills"])
+
+    def HelloWorld(self, cameraStills):
+        print(cameraStills)

@@ -12,6 +12,8 @@ directory and add them to the list of available classes stored in PluginManager.
 """
 class PluginEngine:
     pluginList = []
+    historicalCallbacks = []
+    realtimeCallbacks = []
 
     def __init__(self):
         # Sets the plugins package path
@@ -53,9 +55,21 @@ class PluginEngine:
             # Imports the module
             module = import_module(plugin, "plugins/")
             myClass = getattr(module, plugin)
+
+            # Every plugin we will pass in the engine
             instantiate = myClass(self)
+            instantiate.init()
 
             self.pluginList.append(instantiate)
 
         # print(self.pluginList)
-        self.pluginList[0].HelloWorld()
+
+    """
+    Registers the function and streams to the engine
+    """
+    def RegisterCallback(self, engine, fn, streams):
+
+        if(engine == 'realtime'):
+            self.realtimeCallbacks.append(fn)
+        else:
+            self.historicalCallbacks.append(fn)
