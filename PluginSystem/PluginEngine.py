@@ -53,8 +53,9 @@ class PluginEngine:
             # Imports the module
             module = import_module(plugin, "plugins/")
             myClass = getattr(module, plugin)
-            instantiate = myClass()
+            instantiate = myClass(self)
 
             self.pluginList.append(instantiate)
 
-        print(self.pluginList)
+        # print(self.pluginList)
+        self.pluginList[0].HelloWorld()

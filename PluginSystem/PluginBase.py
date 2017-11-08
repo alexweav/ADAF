@@ -4,8 +4,10 @@ Plugin Base Class
 """
 class PluginBase:
 
-    def __init__(self):
-        print("test base init")
+    pluginEngine = 0
+
+    def __init__(self, pluginEngine):
+        self.pluginEngine = pluginEngine
 
     def run(self):
         return
