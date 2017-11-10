@@ -10,6 +10,6 @@ for function, streams in pluginCallbacks.items():
     function("Hello World")
     print(streams)
 
-    # value[1] contains all streams that are required for this plugin function
+    # streams contains all streams that are required for this plugin function
     for stream in streams:
         print(stream)
