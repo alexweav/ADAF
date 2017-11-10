@@ -61,8 +61,8 @@ class PluginEngine:
     """
     Registers the function and streams to the engine
     """
-    def RegisterCallback(self, name, fn, streams):
-        self.pluginCallbacks[name] = [fn, streams]
+    def RegisterCallback(self, fn, streams):
+        self.pluginCallbacks[fn] = streams
 
     """
     Returns a dictionary of all the pluginCallbacks

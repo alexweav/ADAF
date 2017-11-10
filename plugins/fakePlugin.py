@@ -11,7 +11,7 @@ The class name must be the same as the file name.
 class FakePlugin(PluginBase.PluginBase):
 
     def init(self):
-        self.pluginEngine.RegisterCallback("HelloWorld", self.HelloWorld, ["cameraStills", "otherStream"])
+        self.pluginEngine.RegisterCallback(self.HelloWorld, ["cameraStills", "otherStream"])
 
     def HelloWorld(self, cameraStills):
         print(cameraStills)
