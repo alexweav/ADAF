@@ -78,9 +78,10 @@ class DataStreamRegistry(object):
     """
     def HandleReadStream(self, socket):
         name = socket.Name()
-        print(name)
         data = socket.ReadCallback()
-        socket.HandleStream(data)
+        result = socket.HandleStream(data)
+        if result is not None:
+            self.engine.ExecutePlugin(name, result)
         if data:
             #print(sys.stderr, 'received', data, 'from', socket.Socket().getpeername())
             self.message_queues[socket].put(str(len(data)).encode())

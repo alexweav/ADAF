@@ -43,6 +43,7 @@ class FrameStream(DataStream):
                 self.expectingPacket = False
                 data = self.depacketizer.Data()
                 print('final len', len(data))
-                image = Image.open(io.BytesIO(data))
-                image.show()
+                #image = Image.open(io.BytesIO(data))
+                #image.show()
+                return data
        
