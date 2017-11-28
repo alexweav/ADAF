@@ -12,13 +12,13 @@ class UninitializedStream(DataStream):
         stream_type = identifier['type']
         if stream_type == 'AbcStream':
             print('AbcStream requested')
-            stream = AbcStream(self.address, self.socket, self.registry)
+            stream = AbcStream(self.address, self.socket, self.registry, 'AbcStream')
         elif stream_type == 'DefStream':
             print('DefStream requested')
-            stream = DefStream(self.address, self.socket, self.registry)
+            stream = DefStream(self.address, self.socket, self.registry, 'DefStream')
         elif stream_type == 'FrameStream':
             print('FrameStream requested')
-            stream = FrameStream(self.address, self.socket, self.registry)
+            stream = FrameStream(self.address, self.socket, self.registry, 'FrameStream')
         else:
             print('An unrecognized stream attempted to connect. Closing...')
             self.Close()
