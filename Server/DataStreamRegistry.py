@@ -3,10 +3,17 @@ import select
 import sys
 import queue
 
+#wtf
+from sys import path
+from os.path import dirname as dir
+path.append(dir(path[0]))
+
+
 from AbcStream import *
 from Socket import *
 from ControllerSocket import *
 from DataStream import *
+from PluginSystem import PluginEngine
 from UninitializedStream import *
 
 """
@@ -18,6 +25,7 @@ class DataStreamRegistry(object):
         self.ip = ip
         self.port = port
         self.address = (ip, port)
+        self.engine = PluginEngine.PluginEngine()
         self.registry = {}
         self.controller = ControllerSocket((ip, port), "Controller")
         self.registry[self.controller.Socket()] = self.controller
