@@ -6,7 +6,7 @@ from PluginSystem import PluginBase
 """
 Plugin used for testing.
 
-The class name must be the same as the file name.
+The class name must be the same as the file name. (Case Sensitive)
 """
 class FakePlugin(PluginBase.PluginBase):
 
