@@ -4,12 +4,8 @@ pluginEngine = PluginEngine()
 pluginCallbacks = pluginEngine.GetPluginCallbacks()
 
 # Loop through all callback functions
-for function, streams in pluginCallbacks.items():
+for function, stream in pluginCallbacks.items():
 
     # key is a pointer to the function
     function("Hello World")
-    print(streams)
-
-    # streams contains all streams that are required for this plugin function
-    for stream in streams:
-        print(stream)
+    print(stream)
