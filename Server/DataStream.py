@@ -5,10 +5,11 @@ Represents a single source of streaming data from a client
 """
 class DataStream(Socket):
 
-    def __init__(self, address, socket, registry):
+    def __init__(self, address, socket, registry, name):
         self.address = address
         self.socket = socket
         self.registry = registry
+        self.name = name
 
     """
     Reads a message, with a max of one kb, from the associated raw socket and return it

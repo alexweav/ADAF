@@ -7,8 +7,8 @@ The master socket which polls for other socket connections
 """
 class ControllerSocket(Socket):
 
-    def __init__(self, address):
-        super().__init__(address)
+    def __init__(self, address, name):
+        super().__init__(address, name)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind(self.address)
         self.socket.listen(5)

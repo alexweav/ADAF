@@ -5,9 +5,10 @@ Generic wrapper class for an arbitrary websocket
 """
 class Socket:
 
-    def __init__(self, address):
+    def __init__(self, address, name):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.address = address
+        self.name = name
 
     """
     The (Ip, Port) of the socket as a tuple
@@ -38,6 +39,12 @@ class Socket:
     """
     def Close(self):
         self.socket.close()
+
+    """
+    Gives the name of this socket
+    """
+    def Name(self):
+        return self.name
 
     """
     Callback which reads from this socket
