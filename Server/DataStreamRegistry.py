@@ -19,7 +19,7 @@ class DataStreamRegistry(object):
         self.port = port
         self.address = (ip, port)
         self.registry = {}
-        self.controller = ControllerSocket((ip, port))
+        self.controller = ControllerSocket((ip, port), "Controller")
         self.registry[self.controller.Socket()] = self.controller
         self.inputs = [self.controller]
         self.outputs = []
@@ -46,7 +46,7 @@ class DataStreamRegistry(object):
     """
     def HandleController(self, socket):
         connection = self.controller.ReadCallback()
-        stream = UninitializedStream((self.ip, self.port), connection, self)
+        stream = UninitializedStream((self.ip, self.port), connection, self, 'Uninitialized')
         self.RegisterDataStream(stream)
         self.uninitialized.append(stream)
 
@@ -69,6 +69,8 @@ class DataStreamRegistry(object):
     Handles a DataStream if there is a known read-style update. This usually indicates that new data has been written to the socket
     """
     def HandleReadStream(self, socket):
+        name = socket.Name()
+        print(name)
         data = socket.ReadCallback()
         socket.HandleStream(data)
         if data:
