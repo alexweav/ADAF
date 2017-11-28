@@ -69,3 +69,13 @@ class PluginEngine:
     """
     def GetPluginCallbacks(self):
         return self.pluginCallbacks
+
+    """
+    For a stream name and the data associated with the stream, execute all the
+    functions that are requesting that stream type.
+    """
+    def ExecutePlugin(self, name, data):
+        # Loop through all callback functions
+        for function, stream in self.pluginCallbacks.items():
+            if name is stream:
+                function(data)
