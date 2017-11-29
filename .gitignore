@@ -30,3 +30,6 @@ pip-delete-this-directory.txt
 
 #VI Swap files
 *.swp
+
+#pics
+*.JPG
