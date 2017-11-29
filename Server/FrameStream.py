@@ -30,19 +30,17 @@ class FrameStream(DataStream):
         if not self.expectingPacket:
             jsonstr = data.decode('utf8')
             size = json.loads(jsonstr)
-            print('packets', size['packets'])
-            print('fsize', size['finalPacketSize'])
+            #print('packets', size['packets'])
+            #print('fsize', size['finalPacketSize'])
 
             self.depacketizer = Depacketizer.Depacketizer(size['packets'], size['finalPacketSize'])
             self.expectingPacket = True
         else:
-            print(len(data))
+            #print(len(data))
             self.depacketizer.Next(data)
             if self.depacketizer.Done():
-                print('done')
                 self.expectingPacket = False
                 data = self.depacketizer.Data()
-                print('final len', len(data))
                 #image = Image.open(io.BytesIO(data))
                 #image.show()
                 return data

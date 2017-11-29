@@ -20,10 +20,8 @@ class ALPRPlugin(PluginBase.PluginBase):
         self.pluginEngine.RegisterCallback(self.Alpr, "FrameStream")
 
     def Alpr(self, data):
-        print('plugin got ', len(data))
         image = Image.open(io.BytesIO(data))
         image.save("adaf_frame.JPG")
-        image.show()
         cmdline = ['alpr','adaf_frame.JPG']
         player = subprocess.Popen(cmdline, stdin=subprocess.PIPE)
                                                         
